@@ -1,0 +1,32 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class Todo(BaseModel):
+    description: str
+
+todos = []
+
+@app.post("/todos")
+async def create_todo(todo: Todo):
+    todos.append(todo)
+    return todo
+
+@app.put("/todos/{todo_id}")
+async def update_todo(todo_id: int, todo: Todo):
+    todos[todo_id] = todo
+    return todo
+
+@app.delete("/todos/{todo_id}")
+async def delete_todo(todo_id: int):
+    del todos[todo_id]
+    return {"message": "Todo deleted successfully"}
+
+@app.get("/todos")
+async def get_todos():
+    return todos
+
+@app.get("/todos/{todo_id}")
+async def get_todo(todo_id: int):
+    return todos[todo_id]
